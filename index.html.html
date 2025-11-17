@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Folly 6° A - Seu Blog de Notícias</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-welcome-message">👋 Bem-vindo(a) ao Blog Folly 6° A</h2>
+            <p>Para navegar e publicar, digite seu nome de usuário. Seu nome será salvo no seu navegador.</p>
+            <form id="login-form">
+                <label for="username">Seu Nome de Usuário:</label>
+                <input type="text" id="username-input" required minlength="3" placeholder="Ex: João, Maria, Professora Lucia...">
+                <div id="login-error" class="error-message hidden"></div>
+                <button type="submit">Entrar no Blog</button>
+            </form>
+        </div>
+    </div>
+    
+    <header>
+        <div class="header-content">
+            <div class="blog-logo-text">
+                <span id="logo-blog">Blog</span>
+                <span id="logo-folly">Folly</span>
+                <span id="logo-turma">6° A</span>
+            </div>
+            <p>As últimas notícias do 6º Ano e muito mais!</p>
+        </div>
+    </header>
+
+    <nav>
+        <a href="#artigos">Início</a>
+        <a href="#" id="toggle-form-btn">Criar Nova Notícia</a>
+        <a href="#" id="current-user-display">Usuário: Carregando...</a> 
+        <a href="#" id="logout-btn" class="hidden">Mudar de Usuário</a> 
+    </nav>
+
+    <main class="container">
+        
+        <section id="form-section" class="hidden">
+            <h2>📝 Criar Nova Notícia</h2>
+            <form id="news-form">
+                <label for="titulo">Título da Notícia:</label>
+                <input type="text" id="titulo" required>
+
+                <input type="hidden" id="autor-auto"> 
+
+                <label for="conteudo">Conteúdo Completo:</label>
+                <textarea id="conteudo" rows="8" required></textarea>
+
+                <button type="submit">Publicar Notícia</button>
+                <button type="button" id="cancel-form-btn" class="cancel-btn">Cancelar</button>
+            </form>
+        </section>
+
+        <section id="articles-container">
+            <h2>📰 Últimas Notícias</h2>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year">2025</span> Blog Folly 6° A | Armazenamento local (localStorage).</p> 
+    </footer>
+
+    <script src="script.js"></script>
+<style>
+ /* Importação de fontes */
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+    --primary-color: #2c3e50; /* Azul escuro principal (Cabeçalho/Nav) */
+    --secondary-color: #3498db; /* Azul claro (Destaques/Botões) */
+    --background-color: #f4f7f6; /* Fundo suave */
+    --card-background: #ffffff; 
+    --text-color: #34495e; 
+    --light-text-color: #7f8c8d; 
+    --purple-blog: #9b59b6; 
+    --gold-prof: #f1c40f; 
+    --blue-dev: #2980b9; 
+    --red-denounce: #e74c3c; 
+    --green-submit: #2ecc71; 
+    --shadow-base: 0 4px 12px rgba(0, 0, 0, 0.08); 
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden; 
+}
+
+/* --- LOGO E CABEÇALHO --- */
+header {
+    background-image: linear-gradient(to right, #ffffff, #f0f0f0); 
+    padding: 30px 0 15px; 
+    text-align: center;
+    box-shadow: var(--shadow-base);
+}
+
+.blog-logo-text {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-bottom: 10px;
+    padding: 10px 0;
+}
+
+#logo-blog {
+    font-family: 'Bangers', cursive; 
+    font-size: 4em; 
+    color: var(--purple-blog);
+    -webkit-text-stroke: 3px black; 
+    text-stroke: 3px black;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.2); 
+    line-height: 1;
+    transform: rotate(-7deg); 
+    padding: 5px 15px;
+    background-color: #f7e7f9; 
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+}
+#logo-blog:hover { transform: rotate(-10deg) scale(1.02); }
+
+#logo-folly {
+    font-family: 'Permanent Marker', cursive; 
+    font-size: 3.2em;
+    color: var(--secondary-color); 
+    -webkit-text-stroke: 2px black;
+    text-stroke: 2px black;
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+    line-height: 1;
+    transform: rotate(5deg);
+    margin-left: 15px;
+    padding: 5px 15px;
+    background-color: #e0f2f7; 
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+}
+#logo-folly:hover { transform: rotate(8deg) scale(1.02); }
+
+
+#logo-turma {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8em; 
+    color: var(--text-color); 
+    font-weight: 700;
+    margin-left: 20px;
+    align-self: flex-end; 
+    background-color: var(--card-background); 
+    padding: 5px 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+header p {
+    font-size: 1.1em;
+    opacity: 0.8;
+    color: var(--text-color);
+    margin-top: 15px;
+}
+
+/* --- NAVEGAÇÃO --- */
+nav {
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); 
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; 
+    padding: 0; 
+    border-bottom: 2px solid #222d3a;
+}
+
+nav a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px 22px; 
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+    font-weight: 500; 
+    letter-spacing: 0.5px;
+    border-radius: 0; 
+    margin: 0; 
+}
+
+nav a:hover, nav a:focus {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+#current-user-display {
+    background-color: #e67e22; 
+    cursor: default;
+    pointer-events: none; 
+}
+
+#logout-btn {
+    background-color: #34495e; 
+    transition: background-color 0.3s ease;
+}
+
+#logout-btn:hover {
+    background-color: var(--red-denounce); 
+}
+
+/* --- CONTEÚDO PRINCIPAL E ARTIGOS --- */
+.container {
+    width: 90%;
+    max-width: 960px; 
+    margin: 40px auto; 
+    padding: 0;
+}
+
+/* Estilização do Formulário */
+#form-section {
+    background-color: var(--card-background);
+    padding: 35px; 
+    margin-bottom: 40px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-base);
+}
+
+#form-section h2 {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--secondary-color); 
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+#news-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+#news-form input[type="text"], #news-form textarea {
+    width: calc(100% - 20px);
+    padding: 12px; 
+    border: 1px solid #bdc3c7;
+    border-radius: 6px; 
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#news-form input[type="text"]:focus, #news-form textarea:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* Estilo dos Botões do Formulário */
+#news-form button {
+    padding: 12px 25px; 
+    border: none;
+    border-radius: 8px; 
+    cursor: pointer;
+    margin-right: 15px;
+    margin-top: 25px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    font-weight: 700; 
+    font-size: 1.05em;
+}
+
+#news-form button[type="submit"] {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+#news-form button[type="submit"]:hover {
+    background-color: #2980b9;
+    box-shadow: var(--shadow-hover);
+}
+
+.cancel-btn {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #7f8c8d;
+    box-shadow: var(--shadow-hover);
+}
+
+/* --- ESTILO DE CADA ARTIGO --- */
+#articles-container h2 {
+    color: var(--primary-color);
+    font-size: 2em;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--light-text-color);
+    padding-bottom: 10px;
+}
+
+.news-article {
+    background-color: var(--card-background);
+    padding: 30px;
+    margin-bottom: 30px; 
+    border-radius: 12px; 
+    box-shadow: var(--shadow-base); 
+    border-left: 5px solid var(--secondary-color); 
+    transition: box-shadow 0.3s ease, transform 0.3s ease; 
+    position: relative;
+    overflow: hidden; 
+}
+
+.news-article:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-5px); 
+}
+
+.news-article h2 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary-color); 
+    margin-top: 0;
+    font-size: 2em; 
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.news-info {
+    font-size: 0.95em; 
+    color: var(--light-text-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #dcdcdc; 
+    display: flex;
+    justify-content: space-between;
+}
+
+.news-article p:last-of-type {
+    margin-bottom: 0;
+}
+
+/* --- DESTAQUES (Professor/Desenvolvedor) --- */
+.professora-lucia {
+    color: var(--gold-prof) !important;
+    font-weight: 700;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+.professora-lucia::after {
+    content: ' ⭐'; 
+    margin-left: 5px;
+    font-size: 0.9em;
+    vertical-align: middle;
+}
+
+.desenvolvedor {
+    color: var(--blue-dev) !important;
+    font-weight: 700;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+.desenvolvedor::after {
+    content: ' 💻'; 
+    margin-left: 5px;
+    font-size: 0.9em;
+    vertical-align: middle;
+}
+
+/* --- BOTÕES DE MODERAÇÃO --- */
+.delete-btn, .denounce-btn {
+    border: none;
+    padding: 8px 15px; 
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    float: right; 
+    font-weight: 600;
+    margin-left: 10px; 
+    margin-top: 5px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.delete-btn {
+    background-color: var(--red-denounce); 
+    color: white;
+}
+.delete-btn:hover {
+    background-color: #c0392b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.denounce-btn {
+    background-color: #f39c12; 
+    color: white;
+}
+
+.denounce-btn:hover {
+    background-color: #e67e22;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.denounce-btn.denounced {
+    background-color: var(--secondary-color); 
+}
+
+.denounce-bar {
+    background-color: var(--red-denounce);
+    color: white;
+    padding: 10px 15px;
+    margin-top: 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    animation: pulse 1s infinite alternate; 
+    font-size: 0.95em;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.8; }
+}
+
+/* --- MODAL DE LOGIN (TELA DE BEM-VINDO) --- */
+.modal {
+    position: fixed;
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.92); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease; 
+}
+
+.modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    /* Permite ver o fundo, mas com desfoque para focar no modal */
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    padding: 50px; 
+    border-radius: 15px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); 
+    width: 90%;
+    max-width: 480px; 
+    text-align: center;
+    animation: bounceIn 0.7s ease-out forwards; 
+    transform: scale(0.85); 
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+#modal-welcome-message {
+    color: var(--primary-color);
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.2em; 
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    color: var(--light-text-color);
+    margin-bottom: 25px;
+    font-size: 1.05em;
+}
+
+.modal-content label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.modal-content input[type="text"] {
+    width: calc(100% - 24px); 
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #bdc3c7;
+    border-radius: 8px; 
+    font-size: 1.05em;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-content input[type="text"]:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.3);
+}
+
+#login-form button[type="submit"] {
+    background-color: var(--green-submit);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px; 
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.15em;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%; 
+}
+
+#login-form button[type="submit"]:hover {
+    background-color: #27ae60; 
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+}
+
+.error-message {
+    color: var(--red-denounce);
+    font-weight: 500;
+    margin-bottom: 15px;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid var(--red-denounce);
+    border-radius: 6px;
+    background-color: #fcebeb;
+    font-size: 0.95em;
+}
+
+.hidden {
+    display: none !important; 
+}
+
+/* --- RODAPÉ --- */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 30px 0; 
+    margin-top: 60px;
+    font-size: 0.95em;
+    box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .blog-logo-text {
+        flex-direction: column;
+        align-items: center;
+    }
+    #logo-blog, #logo-folly, #logo-turma {
+        margin: 5px 0;
+        transform: none !important; 
+    }
+    #logo-blog { font-size: 2.8em; padding: 3px 10px; }
+    #logo-folly { font-size: 2.2em; padding: 3px 10px; }
+    #logo-turma { font-size: 1.3em; margin-left: 0; }
+
+    nav a {
+        padding: 10px 15px;
+        flex-basis: 100%; 
+    }
+    
+    .container {
+        width: 95%;
+        margin: 20px auto;
+    }
+
+    #form-section, .news-article, .modal-content {
+        padding: 25px; 
+        border-radius: 8px;
+    }
+    
+    .news-article h2 {
+        font-size: 1.6em;
+    }
+
+    .news-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .news-info span {
+        margin-bottom: 8px;
+    }
+    
+    .delete-btn, .denounce-btn {
+        float: none;
+        display: block;
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    #news-form button {
+        width: calc(100% - 10px);
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .modal-content input[type="text"] {
+        width: calc(100% - 20px);
+    }
+}
+ 
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Seleção dos elementos do DOM
+    const articlesContainer = document.getElementById('articles-container');
+    const newsForm = document.getElementById('news-form');
+    const formSection = document.getElementById('form-section');
+    const toggleFormBtn = document.getElementById('toggle-form-btn');
+    const cancelFormBtn = document.getElementById('cancel-form-btn');
+    const currentUserDisplay = document.getElementById('current-user-display');
+    const autorAutoInput = document.getElementById('autor-auto');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Elementos do Formulário
+    const tituloInput = document.getElementById('titulo');
+    const conteudoInput = document.getElementById('conteudo');
+
+    // Elementos do Modal de Login
+    const loginModal = document.getElementById('login-modal');
+    const loginForm = document.getElementById('login-form');
+    const usernameInput = document.getElementById('username-input'); 
+    const loginError = document.getElementById('login-error');
+    const modalWelcomeMessage = document.getElementById('modal-welcome-message'); 
+
+    // Chaves e Nomes Especiais
+    const STORAGE_KEY_ARTICLES = 'blogFollyNoticias'; 
+    const STORAGE_KEY_CURRENT_USER = 'blogFollyCurrentUser'; 
+    const STORAGE_KEY_REGISTERED_USERS = 'blogFollyRegisteredUsers'; 
+    const STORAGE_KEY_ARTHUR_TIME = 'blogFollyArthurMarinhoLoginTime'; 
+
+    const PROFESSOR_NAME = 'Professora Lucia';
+    const DEVELOPER_NAME = 'Arthur Marinho'; 
+    const DENOUNCE_LIMIT = 5; 
+    const MODERATOR_DELAY_MS = 60000; // 1 minuto
+    const ARTHUR_BLOCKED_AFTER_MS = 5 * 60 * 60 * 1000; // 5 horas em milissegundos
+
+    let currentUsername = '';
+    let registeredUsernames = new Set(); 
+    let arthurMarinhoLoginTime = null; 
+
+    // --- Funções de Inicialização e Usuário ---
+    
+    function loadRegisteredUsernames() {
+        const users = JSON.parse(localStorage.getItem(STORAGE_KEY_REGISTERED_USERS) || '[]');
+        registeredUsernames = new Set(users.map(user => user.toLowerCase()));
+    }
+
+    function saveRegisteredUsernames() {
+        localStorage.setItem(STORAGE_KEY_REGISTERED_USERS, JSON.stringify(Array.from(registeredUsernames)));
+    }
+
+    function updateCurrentYear() {
+        const yearSpan = document.getElementById('current-year');
+        yearSpan.textContent = new Date().getFullYear();
+    }
+
+    function loadArthurMarinhoTime() {
+        const time = localStorage.getItem(STORAGE_KEY_ARTHUR_TIME);
+        if (time) {
+            arthurMarinhoLoginTime = parseInt(time, 10);
+        }
+    }
+
+    function isArthurMarinhoBlocked() {
+        loadArthurMarinhoTime(); 
+        if (arthurMarinhoLoginTime) {
+            const currentTime = Date.now();
+            return (currentTime - arthurMarinhoLoginTime) >= ARTHUR_BLOCKED_AFTER_MS;
+        }
+        return false;
+    }
+
+    function checkUserStatus() {
+        loadRegisteredUsernames(); 
+        loadArthurMarinhoTime(); 
+
+        const savedUsername = localStorage.getItem(STORAGE_KEY_CURRENT_USER);
+        
+        if (savedUsername) {
+            currentUsername = savedUsername;
+
+            if (currentUsername.toLowerCase() === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked()) {
+                alert(O tempo para o usuário "${DEVELOPER_NAME}" expirou. Por favor, use outro nome.);
+                handleLogout(); 
+                return; 
+            }
+
+            updateUserDisplay(currentUsername);
+            loginModal.classList.remove('show'); 
+            logoutBtn.classList.remove('hidden'); 
+        } else {
+            currentUsername = ''; 
+            loginModal.classList.add('show'); 
+            logoutBtn.classList.add('hidden'); 
+            modalWelcomeMessage.textContent = '👋 Bem-vindo(a) ao Blog Folly 6° A'; 
+        }
+        
+        // CORREÇÃO FINAL: As notícias SÃO SEMPRE exibidas aqui
+        displayAllArticles(); 
+    }
+
+    function updateUserDisplay(username) {
+        currentUserDisplay.textContent = Usuário: ${username};
+        autorAutoInput.value = username; 
+    }
+
+    // Lógica de login
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let username = usernameInput.value.trim();
+
+        if (username.length < 3) {
+            loginError.textContent = O nome de usuário deve ter pelo menos 3 caracteres.;
+            loginError.classList.remove('hidden');
+            return;
+        }
+
+        const normalizedUsername = username.toLowerCase();
+        
+        if (normalizedUsername === DEVELOPER_NAME.toLowerCase()) {
+            if (isArthurMarinhoBlocked()) {
+                loginError.textContent = O nome "${DEVELOPER_NAME}" está bloqueado. O tempo de uso expirou.;
+                loginError.classList.remove('hidden');
+                return;
+            } else if (!arthurMarinhoLoginTime) {
+                arthurMarinhoLoginTime = Date.now();
+                localStorage.setItem(STORAGE_KEY_ARTHUR_TIME, arthurMarinhoLoginTime);
+                alert(Usuário "${DEVELOPER_NAME}" logado. Será bloqueado após 5 horas a partir de agora.);
+            }
+        }
+
+        if (!registeredUsernames.has(normalizedUsername)) {
+            registeredUsernames.add(normalizedUsername);
+            saveRegisteredUsernames();
+            modalWelcomeMessage.textContent = 🎉 Olá, ${username}! Seja o(a) primeiro(a) a publicar uma notícia!; 
+        } else {
+             modalWelcomeMessage.textContent = 👋 Olá novamente, ${username}!;
+        }
+
+        localStorage.setItem(STORAGE_KEY_CURRENT_USER, username);
+        currentUsername = username;
+        updateUserDisplay(currentUsername);
+        loginModal.classList.remove('show'); 
+        logoutBtn.classList.remove('hidden'); 
+        loginError.classList.add('hidden');
+        usernameInput.value = ''; 
+        displayAllArticles(); 
+    });
+
+    // Função de logout centralizada
+    function handleLogout() {
+        localStorage.removeItem(STORAGE_KEY_CURRENT_USER); 
+        
+        currentUsername = '';
+        updateUserDisplay('Nenhum');
+        logoutBtn.classList.add('hidden');
+        
+        usernameInput.value = '';
+        loginError.classList.add('hidden');
+
+        checkUserStatus(); 
+        loginModal.classList.add('show');
+        displayAllArticles(); 
+    }
+
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleLogout();
+    });
+
+    // --- Funções de Notícias e Moderação ---
+
+    function loadArticles() {
+        const articles = JSON.parse(localStorage.getItem(STORAGE_KEY_ARTICLES) || '[]');
+        return articles;
+    }
+
+    function saveArticles(articles) {
+        localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(articles));
+    }
+
+    function deleteArticleAndRender(id, isModeratorAction = false) {
+        let articles = loadArticles();
+        articles = articles.filter(article => article.id !== id);
+        saveArticles(articles);
+        displayAllArticles(); 
+        
+        if (isModeratorAction) {
+             alert("Notícia excluída IMEDIATAMENTE por ação de moderação!");
+        } else {
+             alert("Notícia excluída com sucesso!");
+        }
+    }
+
+    function denounceArticle(id, denouncer) {
+        let articles = loadArticles();
+        const index = articles.findIndex(article => article.id === id);
+
+        if (index === -1) return;
+
+        const article = articles[index];
+        const normalizedDenouncer = denouncer.toLowerCase();
+
+        if (article.denuncias.map(d => d.toLowerCase()).includes(normalizedDenouncer)) {
+             alert("Você já denunciou esta notícia.");
+             return;
+        }
+        
+        const isDeveloper = normalizedDenouncer === DEVELOPER_NAME.toLowerCase();
+        const isProfessor = normalizedDenouncer === PROFESSOR_NAME.toLowerCase();
+        
+        if (isDeveloper && isArthurMarinhoBlocked()) {
+             alert(O usuário "${DEVELOPER_NAME}" está bloqueado e não pode mais moderar.);
+             return;
+        }
+
+        if (isDeveloper || isProfessor) {
+            deleteArticleAndRender(id, true);
+            return;
+        }
+
+        article.denuncias.push(denouncer);
+
+        if (article.denuncias.length >= DENOUNCE_LIMIT) {
+            saveArticles(articles); 
+            displayAllArticles(); 
+            
+            alert(Atenção! Notícia de "${article.autor}" atingiu ${DENOUNCE_LIMIT} denúncias. Será excluída em 1 minuto.);
+            
+            setTimeout(() => {
+                if (loadArticles().some(a => a.id === id)) {
+                    deleteArticleAndRender(id);
+                }
+            }, MODERATOR_DELAY_MS); 
+        } else {
+            saveArticles(articles);
+            displayAllArticles();
+            alert(Denúncia registrada! Faltam ${DENOUNCE_LIMIT - article.denuncias.length} denúncias para a exclusão agendada.);
+        }
+    }
+
+    // Renderiza um único artigo
+    function renderArticle(article) {
+        const articleDiv = document.createElement('article');
+        articleDiv.className = 'news-article';
+        articleDiv.dataset.id = article.id; 
+        
+        const date = article.data ? new Date(article.data).toLocaleDateString('pt-BR') : 'Data Desconhecida';
+        const normalizedCurrentUser = currentUsername.toLowerCase();
+        const normalizedAuthor = article.autor.toLowerCase();
+
+        let authorClass = '';
+        if (normalizedAuthor === PROFESSOR_NAME.toLowerCase()) {
+            authorClass = 'professora-lucia';
+        } else if (normalizedAuthor === DEVELOPER_NAME.toLowerCase()) {
+            authorClass = 'desenvolvedor';
+        }
+
+        let buttonsHTML = '';
+        
+        // Verifica permissão para Deletar
+        const canAuthorDelete = (normalizedCurrentUser === normalizedAuthor) && 
+                               !(normalizedAuthor === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked());
+
+        if (canAuthorDelete) {
+            buttonsHTML += <button class="delete-btn" data-id="${article.id}">Excluir 🗑️</button>;
+        }
+        
+        // Verifica permissão para Denunciar
+        const canCurrentUserDenounce = currentUsername && normalizedCurrentUser !== normalizedAuthor &&
+                                       !(normalizedCurrentUser === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked());
+        
+        if (canCurrentUserDenounce) {
+             const userDenounced = article.denuncias && article.denuncias.map(d => d.toLowerCase()).includes(normalizedCurrentUser);
+             const denounceBtnClass = userDenounced ? 'denounce-btn denounced' : 'denounce-btn';
+
+             buttonsHTML += <button class="${denounceBtnClass}" data-id="${article.id}" ${userDenounced ? 'disabled' : ''}>${userDenounced ? 'Denunciado' : 'Denunciar 🚩'}</button>;
+        }
+
+        let denounceBarHTML = '';
+        if (article.denuncias && article.denuncias.length > 0) {
+            denounceBarHTML = <div class="denounce-bar">⚠️ Denúncias: ${article.denuncias.length} / ${DENOUNCE_LIMIT} </div>;
+        }
+
+        articleDiv.innerHTML = `
+            ${buttonsHTML}
+            <h2>${article.titulo}</h2>
+            <p class="news-info">
+                <span>Autor: <strong class="${authorClass}">${article.autor}</strong></span> 
+                <span>Publicado em: <strong>${date}</strong></span>
+            </p>
+            <p>${article.conteudo}</p>
+            ${denounceBarHTML}
+        `;
+
+        articlesContainer.appendChild(articleDiv);
+    }
+
+    function displayAllArticles() {
+        const articles = loadArticles().map(article => ({ 
+            ...article, 
+            denuncias: article.denuncias || [] 
+        }));
+        
+        articlesContainer.innerHTML = '<h2>📰 Últimas Notícias</h2>'; 
+        
+        if (articles.length === 0) {
+            articlesContainer.innerHTML += '<p>Nenhuma notícia publicada ainda. Seja o primeiro a criar uma!</p>';
+            return;
+        }
+
+        articles.sort((a, b) => new Date(b.data) - new Date(a.data)); 
+        articles.forEach(renderArticle);
+    }
+
+    // --- Controladores de Eventos ---
+
+    newsForm.addEventListener('submit', (e) => {
+        e.preventDefault(); 
+        if (!currentUsername) {
+            alert('Você precisa estar logado para publicar!');
+            return;
+        }
+
+        if (currentUsername.toLowerCase() === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked()) {
+             alert(O usuário "${DEVELOPER_NAME}" está bloqueado e não pode mais publicar.);
+             return;
+        }
+        
+        if (!tituloInput.value.trim() || !conteudoInput.value.trim()) {
+            alert('O Título e o Conteúdo da notícia são obrigatórios.');
+            return;
+        }
+
+        const articles = loadArticles();
+        const newId = Date.now(); 
+
+        const newArticle = {
+            id: newId, 
+            titulo: tituloInput.value,
+            autor: currentUsername, 
+            conteudo: conteudoInput.value,
+            data: new Date().toISOString(),
+            denuncias: [] 
+        };
+
+        articles.push(newArticle);
+        saveArticles(articles);
+        
+        newsForm.reset();
+        formSection.classList.add('hidden');
+        toggleFormBtn.textContent = 'Criar Nova Notícia';
+        displayAllArticles();
+        alert(Notícia "${newArticle.titulo}" publicada com sucesso por ${currentUsername}!);
+    });
+    
+    articlesContainer.addEventListener('click', (e) => {
+        const target = e.target;
+        const articleId = parseInt(target.dataset.id);
+
+        if (target.classList.contains('delete-btn')) {
+            const articles = loadArticles();
+            const article = articles.find(a => a.id === articleId);
+
+            const canDelete = (article && article.autor.toLowerCase() === currentUsername.toLowerCase()) &&
+                              !(currentUsername.toLowerCase() === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked());
+
+            if (canDelete) {
+                if (confirm("Tem certeza que deseja EXCLUIR sua notícia?")) {
+                    deleteArticleAndRender(articleId);
+                }
+            } else {
+                 alert("Você não tem permissão para excluir esta notícia.");
+            }
+        } else if (target.classList.contains('denounce-btn')) {
+            if (!currentUsername) {
+                alert("Você precisa estar logado para denunciar.");
+                loginModal.classList.add('show');
+                return;
+            }
+
+            if (currentUsername.toLowerCase() === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked()) {
+                 alert(O usuário "${DEVELOPER_NAME}" está bloqueado e não pode mais denunciar.);
+                 return;
+            }
+
+            if (confirm("Tem certeza que deseja DENUNCIAR esta notícia?")) {
+                denounceArticle(articleId, currentUsername);
+            }
+        }
+    });
+
+    toggleFormBtn.addEventListener('click', () => {
+        if (!currentUsername) {
+             alert('Você precisa se identificar no blog antes de publicar!');
+             loginModal.classList.add('show');
+             return;
+        }
+
+        if (currentUsername.toLowerCase() === DEVELOPER_NAME.toLowerCase() && isArthurMarinhoBlocked()) {
+             alert(O usuário "${DEVELOPER_NAME}" está bloqueado e não pode mais criar notícias.);
+             return;
+        }
+
+        formSection.classList.toggle('hidden');
+        toggleFormBtn.textContent = formSection.classList.contains('hidden') ? 'Criar Nova Notícia' : 'Ocultar Formulário';
+    });
+
+    cancelFormBtn.addEventListener('click', () => {
+        formSection.classList.add('hidden');
+        toggleFormBtn.textContent = 'Criar Nova Notícia';
+        newsForm.reset();
+    });
+
+    // Inicialização ao carregar a página
+    updateCurrentYear(); 
+    checkUserStatus(); 
+});
+
+</script>
+</body>
+</html>
