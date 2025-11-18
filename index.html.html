@@ -7,788 +7,852 @@
 <style>
   * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     font-family: Arial, sans-serif;
   }
-
   body {
     background: #f4f4f8;
     color: #222;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 60px;
   }
-
   header {
     background: #6c5ce7;
-    color: white;
+    color: #fff;
     padding: 15px;
-    text-align: center;
-    font-weight: bold;
     font-size: 22px;
-    user-select: none;
+    font-weight: bold;
+    text-align: center;
   }
-
   .container {
     max-width: 900px;
     margin: 20px auto;
     padding: 10px;
   }
-
   .card {
-    background: white;
+    background: #fff;
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     margin-bottom: 15px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
-  }
-
   .input {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ddd;
     margin-bottom: 10px;
-    transition: border-color 0.3s ease;
-    font-size: 16px;
+    font-family: inherit;
+    font-size: 1em;
   }
-
-  .input:focus {
-    border-color: #6c5ce7;
-    outline: none;
-    box-shadow: 0 0 8px rgba(108, 92, 231, 0.5);
-  }
-
-  .button {
+  button.button {
     background: #6c5ce7;
-    color: white;
-    border: 0;
+    color: #fff;
+    border: none;
     padding: 10px 14px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.15s ease;
+    transition: background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
-
-  .button:hover {
+  button.button:hover {
     background: #5846c6;
-    transform: scale(1.05);
   }
-
-  .button:active {
-    transform: scale(0.95);
+  button.button.small {
+    padding: 4px 8px;
+    font-size: 0.8em;
   }
-
   .post {
     padding: 12px;
     border-radius: 10px;
     background: #fafafa;
     border: 1px solid #eee;
     margin-bottom: 10px;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.5s forwards;
+    word-wrap: break-word;
   }
-
-  @keyframes fadeInUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .post-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
     cursor: pointer;
-    user-select: none;
   }
-
-  .pfp-container {
-    position: relative;
-    display: inline-block;
-  }
-
-  .pfp-initial {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #6c5ce7;
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-  }
-
-  .pfp-big-initial {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #6c5ce7;
-    color: white;
-    font-weight: bold;
-    font-size: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 10px auto;
-    user-select: none;
-  }
-
   .pfp {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #6c5ce7;
-    display: block;
-  }
-
-  .pfp-big {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #6c5ce7;
-    display: block;
-    margin: 0 auto 10px auto;
-  }
-
-  .blogger-label {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(108, 92, 231, 0.85);
-    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #999;
+    color: #fff;
     font-weight: bold;
     font-size: 14px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    pointer-events: none;
+    user-select: none;
+    border: 2px solid #6c5ce7;
   }
-
   .comment-box {
     margin-top: 10px;
     padding-left: 10px;
     border-left: 3px solid #6c5ce7;
-    max-height: 200px;
+  }
+  .verified {
+    color: #1DA1F2;
+    font-weight: bold;
+    cursor: default;
+    position: relative;
+    user-select: none;
+  }
+  .verified[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: white;
+    padding: 4px 7px;
+    font-size: 12px;
+    border-radius: 5px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  /* Chat */
+  #chatBox {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    height: 300px;
     overflow-y: auto;
-    transition: max-height 0.3s ease;
+    background: #fafafa;
+    margin-bottom: 10px;
+    word-wrap: break-word;
   }
-
-  #welcome {
+  .chat-message {
+    margin-bottom: 8px;
+  }
+  .chat-message .author {
+    font-weight: bold;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  .chat-message.own {
+    text-align: right;
+  }
+  #chatInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+  }
+  #chatSendBtn {
+    margin-top: 5px;
+    background: #6c5ce7;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  /* Botão + fixo com menu */
+  #btnAddPost {
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    bottom: 15px;
+    right: 15px;
+    width: 56px;
+    height: 56px;
+    background: #6c5ce7;
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
+    align-items: center;
   }
-
-  #welcome .card {
-    max-width: 350px;
+  #addMenu {
+    position: fixed;
+    bottom: 80px;
+    right: 15px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    z-index: 1100;
+  }
+  #addMenu button {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 8px;
+    margin: 5px;
+    white-space: nowrap;
+  }
+  #addMenu button:hover {
+    background: #5846c6;
+  }
+  /* Modal */
+  #postModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  #postModal .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
     width: 100%;
   }
-
-  .profile {
-    padding: 20px;
-    text-align: center;
+  /* Contadores animados */
+  .counter {
+    display: inline-block;
+    transition: transform 0.3s ease, color 0.3s ease;
   }
-
-  .profile-posts {
-    margin-top: 20px;
-  }
-
-  .profile-posts h3 {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #6c5ce7;
-    padding-bottom: 5px;
+  .counter.animate {
+    transform: scale(1.3);
     color: #6c5ce7;
   }
-
+  /* Ícone Like */
+  .like-icon {
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+  .liked .like-icon {
+    color: #ff4444;
+    transform: scale(1.2);
+  }
+  /* Erro */
   .error {
-    color: #ff4757;
+    color: #ff4444;
     margin-top: 8px;
-    text-align: center;
-  }
-
-  .follow-btn {
-    margin-top: 10px;
-  }
-
-  #searchBar,
-  #searchProfilePosts {
-    margin-bottom: 15px;
-  }
-
-  /* Botões desativados para visitantes */
-  .disabled {
-    opacity: 0.6;
-    pointer-events: none;
   }
 </style>
 </head>
 <body>
 <header>Blog Folly 6A</header>
 
-<!-- Feed público sempre visível -->
-<div class="container" id="feedPublicContainer">
-  <h2 style="color:#6c5ce7; margin-bottom: 15px;">Feed Público</h2>
-  <input
-    id="searchBarPublic"
-    class="input"
-    placeholder="Pesquisar posts por texto, autor ou tag..."
-    oninput="filtrarPosts(true)"
-  />
-  <div id="postsPublic"></div>
-</div>
-
-<!-- Tela de login, aparece só se não está logado -->
-<div id="welcome" style="display:none;">
-  <div class="card" style="max-width:350px; margin: 40px auto;">
+<!-- Tela de login -->
+<div id="welcome" style="display:flex;justify-content:center;align-items:center;height:100vh;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10;">
+  <div class="card" style="max-width:350px;">
     <h2>Entrar</h2>
-    <input id="username" class="input" placeholder="Seu nome..." />
-    <input id="userPhoto" type="file" class="input" accept="image/*" />
-    <button type="button" class="button" onclick="entrar()">Entrar</button>
+    <input id="username" class="input" placeholder="Seu nome..." autocomplete="off" />
+    <button class="button" onclick="entrar()">Entrar</button>
     <p id="loginError" class="error"></p>
   </div>
-</div>
-
-<!-- Área principal do usuário logado -->
-<div id="main" style="display:none;" class="container">
-  <div class="card" style="margin-bottom:10px">
-    <h3>Criar Post</h3>
-    <textarea id="textPost" class="input" placeholder="Escreva algo..."></textarea>
-    <input id="mediaPost" type="file" class="input" accept="image/*,video/*" />
-    <input id="tagPost" class="input" placeholder="Tags (ex: escola, aviso)" />
-    <button class="button" onclick="postar()">Postar</button>
-  </div>
-  <button class="button" onclick="logout()" style="margin-bottom:15px;">Sair da Conta</button>
 </div>
 
 <!-- Página de perfil -->
 <div id="profilePage" style="display:none" class="container"></div>
 
+<!-- Página principal -->
+<div id="main" style="display:none" class="container">
+
+  <!-- Menu superior -->
+  <div style="margin-bottom:10px;text-align:center;">
+    <button class="button" onclick="mostrarAba('posts')">Posts</button>
+    <button class="button" onclick="mostrarAba('videos')">Vídeos Curtos</button>
+    <button class="button" onclick="mostrarSupport()">Apoiar</button>
+    <button class="button" onclick="sair()">Sair</button>
+  </div>
+
+  <!-- Aba posts -->
+  <section id="postsSection" style="display:block;">
+    <div class="card">
+      <h3>Criar Post</h3>
+      <textarea id="textPost" class="input" placeholder="Escreva algo..." rows="3"></textarea>
+      <input id="mediaPost" type="file" class="input" accept="image/*,video/*" />
+      <input id="tagPost" class="input" placeholder="Tags (ex: escola, aviso)" autocomplete="off" />
+      <button class="button" onclick="criarPost()">Postar</button>
+    </div>
+    <div id="posts"></div>
+  </section>
+
+  <!-- Aba vídeos -->
+  <section id="videosSection" style="display:none;">
+    <h3>Vídeos Curtos (até 3 min)</h3>
+    <div id="videos"></div>
+  </section>
+
+</div>
+
+<!-- Menu + com opções Posts e Vídeos Curtos -->
+<div id="addMenu">
+  <button onclick="abrirModalPost()">Novo Post</button>
+  <button onclick="mostrarAba('videos'); toggleAddMenu(false)">Vídeos Curtos</button>
+</div>
+
+<!-- Botão + fixo -->
+<button id="btnAddPost" title="Adicionar">+</button>
+
+<!-- Modal criação post -->
+<div id="postModal">
+  <div class="modal-content">
+    <h3>Criar Post</h3>
+    <textarea id="modalTextPost" class="input" placeholder="Escreva algo..." rows="3"></textarea>
+    <input id="modalMediaPost" type="file" class="input" accept="image/*,video/*" />
+    <input id="modalTagPost" class="input" placeholder="Tags (ex: escola, aviso)" autocomplete="off" />
+    <button class="button" onclick="validarModalPost()">Postar</button>
+    <button class="button" style="background:#999; margin-left:10px;" onclick="fecharModalPost()">Cancelar</button>
+    <p id="modalPostError" class="error"></p>
+  </div>
+</div>
+
+<!-- Modal apoio Pix -->
+<div id="supportModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;z-index:9999;display:flex;">
+  <div style="background:#fff;padding:20px;border-radius:10px;text-align:center;margin:auto;">
+    <h3>Doe via Pix</h3>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=pix:arthurmarinho199308@gmail.com" alt="QR Pix" /><br /><br />
+    <button class="button" onclick="fecharSupport()">Fechar</button>
+  </div>
+</div>
+
+<!-- Sons do site -->
+<audio id="soundLike" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
+<audio id="soundPost" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
+<audio id="soundComment" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+<audio id="soundFollow" src="https://www.soundjay.com/buttons/sounds/button-4.mp3" preload="auto"></audio>
+
 <script>
+  let usuarios = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  let posts = JSON.parse(localStorage.getItem('posts') || '[]');
   let usuario = null;
-  let usuarios = {};
-  let posts = [];
-  let filtroAtivoPublic = "";
-  let filtroAtivoPrivado = "";
-  window.perfilExibido = null;
+  let abaAtual = 'posts';
+  const VERIFIED_USERS = ['Arthur Marinho', 'Professora Lucia Melo'];
 
-  function salvarUsuarios() {
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-  }
-
-  function carregarUsuarios() {
-    usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
-  }
-
+  // Salvar dados
   function salvar() {
-    localStorage.setItem("posts", JSON.stringify(posts));
+    localStorage.setItem('posts', JSON.stringify(posts));
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
   }
 
+  // Carregar dados e renderizar
   function carregar() {
-    posts = JSON.parse(localStorage.getItem("posts") || "[]");
+    posts = JSON.parse(localStorage.getItem('posts') || '[]');
+    usuarios = JSON.parse(localStorage.getItem('usuarios') || '{}');
+    renderPosts();
+    renderVideos();
   }
 
-  function salvarUsuarioLogado() {
-    localStorage.setItem("usuarioLogado", usuario);
-  }
-
-  function carregarUsuarioLogado() {
-    return localStorage.getItem("usuarioLogado");
-  }
-
-  function limparUsuarioLogado() {
-    localStorage.removeItem("usuarioLogado");
-  }
-
-  // Inicial do nome
-  function inicialDoNome(nome) {
-    return nome.charAt(0).toUpperCase();
-  }
-
-  // Render pública para visitantes
-  function renderPostsPublic(filtrar = true) {
-    const area = document.getElementById("postsPublic");
-    area.innerHTML = "";
-
-    let postsParaRender = posts;
-    if (filtrar && filtroAtivoPublic) {
-      const f = filtroAtivoPublic.toLowerCase();
-      postsParaRender = posts.filter((post) => {
-        return (
-          post.autor.toLowerCase().includes(f) ||
-          post.texto.toLowerCase().includes(f) ||
-          (post.tag && post.tag.toLowerCase().includes(f))
-        );
-      });
-    }
-
-    postsParaRender.forEach((post) => {
-      const div = document.createElement("div");
-      div.className = "post";
-
-      div.innerHTML = `
-      <div class='post-header' style="cursor:default;">
-        ${
-          post.fotoAutor
-            ? `<img class='pfp' src='${post.fotoAutor}' alt="Foto do perfil">`
-            : `<div class="pfp-initial">${inicialDoNome(post.autor)}</div>`
-        }
-        <b>${post.autor}</b>
-      </div>
-      ${post.texto.replace(/\n/g, "<br>")}
-      ${
-        post.midia
-          ? post.tipoMidia.startsWith("image/")
-            ? `<br><img src='${post.midia}' style='max-width:100%;border-radius:8px;margin-top:10px;' alt="Mídia do post">`
-            : `<br><video src='${post.midia}' controls style='max-width:100%;border-radius:8px;margin-top:10px;'></video>`
-          : ""
-      }
-      ${post.tag ? `<p><i>#${post.tag}</i></p>` : ""}
-      `;
-      area.appendChild(div);
-    });
-  }
-
-  // Render posts com ações para usuários logados
-  function renderPostsPrivado(filtrar = true) {
-    const area = document.getElementById("postsPublic"); // usa mesma div do feed público
-    area.innerHTML = "";
-
-    let postsParaRender = posts;
-    if (filtrar && filtroAtivoPrivado) {
-      const f = filtroAtivoPrivado.toLowerCase();
-      postsParaRender = posts.filter((post) => {
-        return (
-          post.autor.toLowerCase().includes(f) ||
-          post.texto.toLowerCase().includes(f) ||
-          (post.tag && post.tag.toLowerCase().includes(f))
-        );
-      });
-    }
-
-    postsParaRender.forEach((post) => {
-      const div = document.createElement("div");
-      div.className = "post";
-
-      div.innerHTML = `
-      <div class='post-header' onclick="abrirPerfil('${post.autor}')">
-        ${
-          post.fotoAutor
-            ? `<img class='pfp' src='${post.fotoAutor}' alt="Foto do perfil">`
-            : `<div class="pfp-initial">${inicialDoNome(post.autor)}</div>`
-        }
-        <b>${post.autor}</b>
-      </div>
-      ${post.texto.replace(/\n/g, "<br>")}
-      ${
-        post.midia
-          ? post.tipoMidia.startsWith("image/")
-            ? `<br><img src='${post.midia}' style='max-width:100%;border-radius:8px;margin-top:10px;' alt="Mídia do post">`
-            : `<br><video src='${post.midia}' controls style='max-width:100%;border-radius:8px;margin-top:10px;'></video>`
-          : ""
-      }
-      ${post.tag ? `<p><i>#${post.tag}</i></p>` : ""}
-      <button class='button' style='margin-top:8px' onclick="curtir(${post.id})">Curtir (${post.curtidas.length})</button>
-      <button class='button' style='margin-top:8px' onclick="toggleComentarios(${post.id})">Comentários (${post.comentarios.length})</button>
-      ${
-        post.autor === usuario
-          ? `<button class='button' onclick="excluir(${post.id})">Excluir</button><button class='button' onclick="editar(${post.id})">Editar</button>`
-          : ""
-      }
-      <div id='comments-${post.id}' style='display:none' class='comment-box'></div>
-      `;
-
-      area.appendChild(div);
-    });
-  }
-
-  // Render posts do perfil aberto
-  function renderPostsPerfil(nome, filtro = "") {
-    const area = document.getElementById("postsProfile");
-    if (!area) return;
-    area.innerHTML = "";
-
-    filtro = filtro.toLowerCase();
-
-    const postsUsuario = posts.filter((post) => post.autor === nome);
-
-    const postsFiltrados = filtro
-      ? postsUsuario.filter(
-          (post) =>
-            post.texto.toLowerCase().includes(filtro) ||
-            (post.tag && post.tag.toLowerCase().includes(filtro))
-        )
-      : postsUsuario;
-
-    postsFiltrados.forEach((post) => {
-      const div = document.createElement("div");
-      div.className = "post";
-
-      div.innerHTML = `
-      <div class='post-header' onclick="abrirPerfil('${post.autor}')">
-        ${
-          post.fotoAutor
-            ? `<img class='pfp' src='${post.fotoAutor}' alt="Foto do perfil">`
-            : `<div class="pfp-initial">${inicialDoNome(post.autor)}</div>`
-        }
-        <b>${post.autor}</b>
-      </div>
-      ${post.texto.replace(/\n/g, "<br>")}
-      ${
-        post.midia
-          ? post.tipoMidia.startsWith("image/")
-            ? `<br><img src='${post.midia}' style='max-width:100%;border-radius:8px;margin-top:10px;' alt="Mídia do post">`
-            : `<br><video src='${post.midia}' controls style='max-width:100%;border-radius:8px;margin-top:10px;'></video>`
-          : ""
-      }
-      ${post.tag ? `<p><i>#${post.tag}</i></p>` : ""}
-      <button class='button' style='margin-top:8px' onclick="curtir(${post.id})">Curtir (${post.curtidas.length})</button>
-      <button class='button' style='margin-top:8px' onclick="toggleComentarios(${post.id})">Comentários (${post.comentarios.length})</button>
-      ${
-        post.autor === usuario
-          ? `<button class='button' onclick="excluir(${post.id})">Excluir</button><button class='button' onclick="editar(${post.id})">Editar</button>`
-          : ""
-      }
-      <div id='comments-${post.id}' style='display:none' class='comment-box'></div>
-      `;
-
-      area.appendChild(div);
-    });
-  }
-
-  function curtir(id) {
-    if (!usuario) {
-      alert("Faça login para curtir.");
+  // Entrar no sistema
+  function entrar() {
+    const user = document.getElementById('username').value.trim();
+    if (!user) {
+      document.getElementById('loginError').textContent = 'Digite um nome.';
       return;
     }
-    const p = posts.find((x) => x.id === id);
-    if (!p.curtidas.includes(usuario)) p.curtidas.push(usuario);
-    else p.curtidas = p.curtidas.filter((x) => x !== usuario);
-    salvar();
-    render();
-    if (window.perfilExibido) {
-      renderPostsPerfil(window.perfilExibido, document.getElementById("searchProfilePosts")?.value || "");
+    if (!usuarios[user]) {
+      usuarios[user] = { seguindo: [], seguidores: [], foto: null, settings: {} };
     }
+    usuario = user;
+    localStorage.setItem('usuarioAtivo', usuario);
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    carregar();
+    mostrarAba('posts');
   }
 
-  function toggleComentarios(id) {
-    if (!usuario) {
-      alert("Faça login para ver ou comentar.");
-      return;
-    }
-    const box = document.getElementById(`comments-${id}`);
-    const exibindo = box.style.display !== "none";
-
-    if (exibindo) {
-      box.style.display = "none";
-    } else {
-      box.style.display = "block";
-      mostrarComentarios(id);
-    }
+  // Mostrar aba
+  function mostrarAba(aba) {
+    document.getElementById('postsSection').style.display = (aba === 'posts') ? 'block' : 'none';
+    document.getElementById('videosSection').style.display = (aba === 'videos') ? 'block' : 'none';
+    abaAtual = aba;
+    toggleAddMenu(false);
   }
 
-  function mostrarComentarios(id) {
-    const p = posts.find((x) => x.id === id);
-    const box = document.getElementById(`comments-${id}`);
+  // Renderizar posts (não vídeos)
+  function renderPosts() {
+    const container = document.getElementById('posts');
+    container.innerHTML = '';
+    posts.filter(p => !(p.tipoMidia && p.tipoMidia.startsWith('video/'))).forEach(p => {
+      container.appendChild(createPostElement(p));
+    });
+  }
 
-    box.innerHTML =
-      p.comentarios
-        .map((c) => `<p><b>${c.autor}:</b> ${c.texto}</p>`)
-        .join("") +
-      `
-      <input id='com-${id}' class='input' placeholder='Comente...'>
-      <button class='button' onclick="comentar(${id})">Enviar</button>
+  // Renderizar vídeos curtos
+  function renderVideos() {
+    const container = document.getElementById('videos');
+    container.innerHTML = '';
+    posts.filter(p => p.tipoMidia && p.tipoMidia.startsWith('video/')).forEach(p => {
+      container.appendChild(createPostElement(p));
+    });
+  }
+
+  // Criar elemento post
+  function createPostElement(p) {
+    const div = document.createElement('div');
+    div.className = 'post';
+    div.id = 'post-' + p.id;
+    const isLiked = p.curtidas.includes(usuario);
+
+    // Prevent click on buttons from opening profile
+    div.innerHTML = `
+      <div class="post-header" onclick="abrirPerfil('${p.autor}')">
+        <div class="pfp">${getInitials(p.autor)}</div>
+        <b>${p.autor} <span class="verified" data-tooltip="Verificado">${verifiedBadge(p.autor)}</span> ${getBadge(usuarios[p.autor]?.seguidores.length || 0)}</b>
+      </div>
+      <div class="post-text">${p.texto ? p.texto.replace(/\n/g, '<br>') : ''}</div>
+      ${p.midia
+        ? (p.tipoMidia.startsWith('image/')
+          ? `<br><img src="${p.midia}" style="max-width:100%;border-radius:8px;margin-top:10px;">`
+          : `<br><video src="${p.midia}" controls style="max-width:100%;border-radius:8px;margin-top:10px;"></video>`)
+        : ''
+      }
+      ${p.tag ? `<p><i>#${p.tag}</i></p>` : ''}
+      <button class="button like-btn ${isLiked ? 'liked' : ''}" style="margin-top:8px" onclick="event.stopPropagation(); curtir(${p.id}, this)">
+        <span class="like-icon">👍</span> <span class="like-count">${p.curtidas.length}</span>
+      </button>
+      <button class="button" style="margin-top:8px" onclick="event.stopPropagation(); toggleComentarios(${p.id})">Comentários (${p.comentarios.length})</button>
+      ${p.autor === usuario ? `
+        <button class="button small" onclick="event.stopPropagation(); excluir(${p.id})">Excluir</button>
+        <button class="button small" onclick="event.stopPropagation(); editar(${p.id})">Editar</button>
+      ` : ''}
+      <button class="button small" onclick="event.stopPropagation(); denunciar(${p.id})">Denunciar</button>
+      <div id="comments-${p.id}" style="display:none" class="comment-box"></div>
     `;
+    return div;
   }
 
-  function comentar(id) {
-    if (!usuario) {
-      alert("Faça login para comentar.");
-      return;
+  // Obter iniciais
+  function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  }
+
+  // Curtir / descurtir
+  function curtir(id, btn) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    const index = p.curtidas.indexOf(usuario);
+    if (index === -1) {
+      p.curtidas.push(usuario);
+      btn.classList.add('liked');
+    } else {
+      p.curtidas.splice(index, 1);
+      btn.classList.remove('liked');
     }
+    btn.querySelector('.like-count').textContent = p.curtidas.length;
+    animarLike(btn);
+    salvar();
+    renderPosts();
+    renderVideos();
+    playSound('soundLike');
+  }
+
+  // Animação like
+  function animarLike(button) {
+    button.classList.add('animate');
+    setTimeout(() => button.classList.remove('animate'), 300);
+  }
+
+  // Mostrar/ocultar comentários
+  function toggleComentarios(id) {
+    const box = document.getElementById(`comments-${id}`);
+    if (!box) return;
+    const isVisible = box.style.display === 'block';
+    box.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) mostrarComentarios(id);
+  }
+
+  // Mostrar comentários
+  function mostrarComentarios(id) {
+    const p = posts.find(x => x.id === id);
+    const box = document.getElementById(`comments-${id}`);
+    if (!p || !box) return;
+    box.innerHTML = '';
+    p.comentarios.forEach((cmt, i) => {
+      const pComment = document.createElement('p');
+      pComment.style.cursor = cmt.autor === usuario ? 'pointer' : 'default';
+      pComment.title = cmt.autor === usuario ? 'Clique para deletar seu comentário' : '';
+      pComment.innerHTML = `<b>${cmt.autor}:</b> ${cmt.texto}`;
+      if (cmt.autor === usuario) {
+        pComment.onclick = () => {
+          if (confirm('Deletar seu comentário?')) {
+            p.comentarios.splice(i, 1);
+            salvar();
+            mostrarComentarios(id);
+            renderPosts();
+            renderVideos();
+          }
+        };
+      }
+      box.appendChild(pComment);
+    });
+    const input = document.createElement('input');
+    input.id = `com-${id}`;
+    input.className = 'input';
+    input.placeholder = 'Comente...';
+    box.appendChild(input);
+
+    const sendBtn = document.createElement('button');
+    sendBtn.className = 'button';
+    sendBtn.textContent = 'Enviar';
+    sendBtn.onclick = () => comentar(id);
+    box.appendChild(sendBtn);
+  }
+
+  // Comentar post
+  function comentar(id) {
     const input = document.getElementById(`com-${id}`);
+    if (!input) return;
     const texto = input.value.trim();
     if (!texto) return;
-    const p = posts.find((x) => x.id === id);
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
     p.comentarios.push({ autor: usuario, texto });
     salvar();
     mostrarComentarios(id);
-    render();
-    if (window.perfilExibido) {
-      renderPostsPerfil(window.perfilExibido, document.getElementById("searchProfilePosts")?.value || "");
-    }
+    renderPosts();
+    renderVideos();
+    playSound('soundComment');
   }
 
+  // Excluir post
   function excluir(id) {
-    if (!usuario) {
-      alert("Faça login para excluir.");
-      return;
-    }
-    const p = posts.find((post) => post.id === id);
-    if (p.autor !== usuario) {
-      alert("Só o autor pode excluir.");
-      return;
-    }
-
-    posts = posts.filter((p) => p.id !== id);
+    if (!confirm('Excluir esse post?')) return;
+    posts = posts.filter(p => p.id !== id);
     salvar();
-    render();
-    if (window.perfilExibido) {
-      renderPostsPerfil(window.perfilExibido, document.getElementById("searchProfilePosts")?.value || "");
-    }
+    renderPosts();
+    renderVideos();
   }
 
+  // Editar post texto
   function editar(id) {
-    if (!usuario) {
-      alert("Faça login para editar.");
-      return;
-    }
-    const p = posts.find((post) => post.id === id);
-    if (p.autor !== usuario) {
-      alert("Só o autor pode editar.");
-      return;
-    }
-
-    const novo = prompt("Novo texto:", p.texto);
-    if (novo === null) return;
-
-    p.texto = novo;
-    salvar();
-    render();
-    if (window.perfilExibido) {
-      renderPostsPerfil(window.perfilExibido, document.getElementById("searchProfilePosts")?.value || "");
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    const novo = prompt('Novo texto:', p.texto);
+    if (novo !== null) {
+      p.texto = novo;
+      salvar();
+      renderPosts();
+      renderVideos();
     }
   }
 
-  function postar() {
-    if (!usuario) {
-      alert("Faça login para postar.");
+  // Abrir perfil do usuário
+  function abrirPerfil(nome) {
+    const p = usuarios[nome];
+    if (!p) {
+      alert('Usuário não encontrado.');
       return;
     }
+    document.getElementById('main').style.display = 'none';
+    const pgs = document.getElementById('profilePage');
+    pgs.style.display = 'block';
+    const seguindo = usuarios[usuario]?.seguindo || [];
+    const jaSegue = seguindo.includes(nome);
+    pgs.innerHTML = `<div class="card profile">
+      <div class="pfp">${getInitials(nome)}</div>
+      <h2>${nome} <span class="verified" data-tooltip="Verificado">${verifiedBadge(nome)}</span> ${getBadge(p.seguidores.length)}</h2>
+      <p>Seguidores: <span class="counter" id="countSeguidores">${p.seguidores.length}</span></p>
+      <p>Seguindo: <span class="counter" id="countSeguindo">${p.seguindo.length}</span></p>
+      ${nome !== usuario ? `<button class="button" onclick="toggleSeguir('${nome}')">${jaSegue ? 'Desseguir' : 'Seguir'}</button>` : '<p>Você não pode se seguir.</p>'}
+      <button class="button" onclick="voltar()">Voltar</button>
+    </div>`;
+    animarContador('countSeguidores', p.seguidores.length);
+    animarContador('countSeguindo', p.seguindo.length);
+  }
 
-    const texto = document.getElementById("textPost").value.trim();
-    const arquivo = document.getElementById("mediaPost").files[0];
-    const tag = document.getElementById("tagPost").value.trim();
+  // Seguir/desseguir
+  function toggleSeguir(nome) {
+    const seguindo = usuarios[usuario]?.seguindo || [];
+    if (seguindo.includes(nome)) {
+      usuarios[usuario].seguindo = seguindo.filter(s => s !== nome);
+      usuarios[nome].seguidores = usuarios[nome].seguidores.filter(s => s !== usuario);
+    } else {
+      usuarios[usuario].seguindo.push(nome);
+      usuarios[nome].seguidores.push(usuario);
+    }
+    salvar();
+    abrirPerfil(nome);
+  }
 
-    if (!texto && !arquivo) return;
+  // Voltar para principal
+  function voltar() {
+    document.getElementById('profilePage').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+  }
 
+  // Denunciar post
+  function denunciar(id) {
+    const p = posts.find(p => p.id === id);
+    if (!p) return;
+    if (p.autor === usuario) {
+      alert('Não pode denunciar seu próprio post.');
+      return;
+    }
+    p.reports = p.reports || [];
+    if (!p.reports.includes(usuario)) p.reports.push(usuario);
+    if (p.reports.length >= 5) {
+      posts = posts.filter(x => x.id !== id);
+      alert('Post removido por denúncias.');
+    } else {
+      alert('Denúncia registrada.');
+    }
+    salvar();
+    renderPosts();
+    renderVideos();
+  }
+
+  // Sair do sistema
+  function sair() {
+    if (!confirm('Deseja sair do site?')) return;
+    localStorage.removeItem('usuarioAtivo');
+    location.reload();
+  }
+
+  // Badge verificado
+  function verifiedBadge(nome) {
+    return VERIFIED_USERS.includes(nome) ? '✔️' : '';
+  }
+
+  // Badge seguidores
+  function getBadge(segs) {
+    if (segs >= 1000000) return '🔶 Ouro';
+    if (segs >= 1000) return '🔹 Prata';
+    if (segs >= 50) return '🥉 Bronze';
+    return '';
+  }
+
+  // Animação contador
+  function animarContador(id, novoValor) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = novoValor;
+    el.classList.add('animate');
+    setTimeout(() => el.classList.remove('animate'), 600);
+  }
+
+  // Validar tamanho de vídeo no input - async for safety
+  function validarArquivoVideo(input) {
+    const file = input.files[0];
+    if (!file || !file.type.startsWith('video/')) return;
+    const url = URL.createObjectURL(file);
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      if (video.duration > 180) {
+        alert('Vídeo deve ter até 3 minutos.');
+        input.value = '';
+      }
+    };
+    video.src = url;
+  }
+  document.getElementById('mediaPost').addEventListener('change', e => validarArquivoVideo(e.target));
+  document.getElementById('modalMediaPost').addEventListener('change', e => validarArquivoVideo(e.target));
+
+  // Modal post
+  const postModal = document.getElementById('postModal');
+
+  // Abrir modal criar post
+  function abrirModalPost() {
+    postModal.style.display = 'flex';
+    document.getElementById('modalTextPost').value = '';
+    document.getElementById('modalMediaPost').value = '';
+    document.getElementById('modalTagPost').value = '';
+    toggleAddMenu(false);
+  }
+
+  // Fechar modal post
+  function fecharModalPost() {
+    postModal.style.display = 'none';
+    document.getElementById('modalPostError').textContent = '';
+  }
+
+  // Validar e criar post modal
+  function validarModalPost() {
+    const texto = document.getElementById('modalTextPost').value.trim();
+    const arquivo = document.getElementById('modalMediaPost').files[0];
+    const tag = document.getElementById('modalTagPost').value.trim();
+    const errorEl = document.getElementById('modalPostError');
+    errorEl.textContent = '';
+
+    if (!texto && !arquivo) {
+      errorEl.textContent = 'Adicione texto ou mídia.';
+      return;
+    }
+    if (arquivo && arquivo.type.startsWith('video/')) {
+      const url = URL.createObjectURL(arquivo);
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        if (video.duration > 180) {
+          alert('Vídeo deve ter até 3 minutos.');
+          return;
+        } else {
+          criarPostModal(texto, arquivo, tag);
+        }
+      };
+      video.src = url;
+    } else {
+      criarPostModal(texto, arquivo, tag);
+    }
+  }
+
+  // Criar post modal
+  function criarPostModal(texto, arquivo, tag) {
     let midia = null;
-    if (arquivo) midia = URL.createObjectURL(arquivo);
-
+    let tipo = null;
+    if (arquivo) {
+      midia = URL.createObjectURL(arquivo);
+      tipo = arquivo.type;
+    }
     const post = {
       id: Date.now(),
       autor: usuario,
-      fotoAutor: usuarios[usuario].foto,
-      texto,
-      midia,
-      tipoMidia: arquivo ? arquivo.type : null,
-      tag,
+      fotoAutor: null,
+      texto: texto,
+      midia: midia,
+      tipoMidia: tipo,
+      tag: tag,
       curtidas: [],
       comentarios: [],
+      reports: []
     };
-
     posts.unshift(post);
     salvar();
-
-    // limpar inputs
-    document.getElementById("textPost").value = "";
-    document.getElementById("mediaPost").value = "";
-    document.getElementById("tagPost").value = "";
-
-    render();
+    fecharModalPost();
+    if (tipo && tipo.startsWith('video/')) mostrarAba('videos');
+    else mostrarAba('posts');
+    renderPosts();
+    renderVideos();
+    playSound('soundPost');
   }
 
-  function entrar() {
-    const user = document.getElementById("username").value.trim();
-    const photo = document.getElementById("userPhoto").files[0];
-    const loginError = document.getElementById("loginError");
+  // Criar post direto do formulário
+  function criarPost() {
+    const texto = document.getElementById('textPost').value.trim();
+    const fileInput = document.getElementById('mediaPost');
+    const arquivo = fileInput.files[0];
+    const tag = document.getElementById('tagPost').value.trim();
 
-    if (!user) {
-      loginError.textContent = "Digite um nome.";
+    if (!texto && !arquivo) {
+      alert('Adicione texto ou mídia.');
       return;
     }
-
-    loginError.textContent = "";
-
-    carregarUsuarios();
-    carregar();
-
-    usuario = user;
-
-    if (!usuarios[user]) {
-      let fotoUsuario;
-      if (photo) {
-        fotoUsuario = URL.createObjectURL(photo);
-      } else {
-        fotoUsuario = null;
-      }
-      usuarios[user] = { seguindo: [], seguidores: [], foto: fotoUsuario };
-      salvarUsuarios();
-    } else {
-      if (photo) {
-        usuarios[user].foto = URL.createObjectURL(photo);
-        salvarUsuarios();
-      }
-    }
-
-    salvarUsuarioLogado();
-
-    document.getElementById("welcome").style.display = "none";
-    document.getElementById("main").style.display = "block";
-
-    // Esconde o feed público, pois o feed privado com ações ficará no mesmo elemento
-    document.getElementById("feedPublicContainer").style.display = "block";
-
-    render();
-  }
-
-  function logout() {
-    limparUsuarioLogado();
-    usuario = null;
-    window.perfilExibido = null;
-    document.getElementById("main").style.display = "none";
-    document.getElementById("welcome").style.display = "block";
-    document.getElementById("feedPublicContainer").style.display = "block";
-    document.getElementById("profilePage").style.display = "none";
-    render();
-  }
-
-  function render() {
-    if (window.perfilExibido) {
-      document.getElementById("feedPublicContainer").style.display = "none";
-      document.getElementById("main").style.display = "none";
-      document.getElementById("profilePage").style.display = "block";
-      renderPostsPerfil(window.perfilExibido, document.getElementById("searchProfilePosts")?.value || "");
-    } else if (usuario) {
-      document.getElementById("feedPublicContainer").style.display = "block";
-      document.getElementById("main").style.display = "block";
-      document.getElementById("profilePage").style.display = "none";
-      renderPostsPrivado();
-    } else {
-      document.getElementById("feedPublicContainer").style.display = "block";
-      document.getElementById("main").style.display = "none";
-      document.getElementById("welcome").style.display = "block";
-      document.getElementById("profilePage").style.display = "none";
-      renderPostsPublic();
-    }
-  }
-
-  function filtrarPosts(publico = false) {
-    if (publico) {
-      filtroAtivoPublic = document.getElementById("searchBarPublic").value.trim();
-      renderPostsPublic();
-    } else {
-      filtroAtivoPrivado = document.getElementById("searchBar").value.trim();
-      renderPostsPrivado();
-    }
-  }
-
-  function filtrarPostsPerfil(nome) {
-    const filtro = document.getElementById('searchProfilePosts').value || "";
-    renderPostsPerfil(nome, filtro);
-  }
-
-  function abrirPerfil(nome) {
-    window.perfilExibido = nome;
-    document.getElementById("welcome").style.display = "none";
-    document.getElementById("main").style.display = "none";
-    document.getElementById("feedPublicContainer").style.display = "none";
-    document.getElementById("profilePage").style.display = "block";
-
-    carregarUsuarios();
-    carregar();
-
-    const perfil = usuarios[nome];
-    const page = document.getElementById("profilePage");
-
-    // Barra de pesquisa e estrutura do perfil já será gerada na renderPostsPerfil
-    page.innerHTML = `
-    <div class='card profile'>
-      <div class="pfp-container" style="display:inline-block; position:relative;">
-        ${
-          perfil.foto
-            ? `<img class='pfp-big' src='${perfil.foto}' alt="Foto do perfil">`
-            : `<div class="pfp-big-initial">${inicialDoNome(nome)}</div>`
+    if (arquivo && arquivo.type.startsWith('video/')) {
+      const url = URL.createObjectURL(arquivo);
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        if (video.duration > 180) {
+          alert('Vídeo deve ter até 3 minutos.');
+          fileInput.value = '';
+        } else {
+          adicionarPost(texto, arquivo, tag);
         }
-        <div class="blogger-label">Blogger</div>
-      </div>
-      <h2>${nome}</h2>
-      <p>Seguidores: ${perfil.seguidores.length}</p>
-      <p>Seguindo: ${perfil.seguindo.length}</p>
-      ${
-        nome !== usuario
-          ? usuarios[usuario].seguindo.includes(nome)
-            ? `<button class="button follow-btn" onclick="deixarDeSeguir('${nome}')">Deixar de seguir</button>`
-            : `<button class="button follow-btn" onclick="seguir('${nome}')">Seguir</button>`
-          : ""
-      }
-      <button class='button' onclick="voltar()">Voltar</button>
-    </div>
-    <input id="searchProfilePosts" class="input" placeholder="Pesquisar posts deste perfil..." oninput="filtrarPostsPerfil('${nome}')" />
-    <div id="postsProfile"></div>
-    `;
-
-    renderPostsPerfil(nome);
-  }
-
-  function seguir(nome) {
-    if (nome === usuario) return;
-    if (!usuarios[usuario].seguindo.includes(nome)) {
-      usuarios[usuario].seguindo.push(nome);
-      usuarios[nome].seguidores.push(usuario);
-      salvarUsuarios();
-    }
-    render();
-  }
-
-  function deixarDeSeguir(nome) {
-    if (nome === usuario) return;
-    usuarios[usuario].seguindo = usuarios[usuario].seguindo.filter((x) => x !== nome);
-    usuarios[nome].seguidores = usuarios[nome].seguidores.filter((x) => x !== usuario);
-    salvarUsuarios();
-    render();
-  }
-
-  function voltar() {
-    window.perfilExibido = null;
-    document.getElementById("profilePage").style.display = "none";
-    render();
-  }
-
-  window.onload = () => {
-    carregarUsuarios();
-    carregar();
-
-    const usuarioGuardado = carregarUsuarioLogado();
-    if (usuarioGuardado && usuarios[usuarioGuardado]) {
-      usuario = usuarioGuardado;
-      document.getElementById("welcome").style.display = "none";
-      document.getElementById("main").style.display = "block";
-      document.getElementById("feedPublicContainer").style.display = "block";
+      };
+      video.src = url;
     } else {
-      document.getElementById("welcome").style.display = "block";
-      document.getElementById("main").style.display = "none";
-      document.getElementById("feedPublicContainer").style.display = "block";
+      adicionarPost(texto, arquivo, tag);
     }
-    render();
+  }
+
+  // Adicionar post direto
+  function adicionarPost(texto, arquivo, tag) {
+    let midia = null;
+    let tipo = null;
+    if (arquivo) {
+      midia = URL.createObjectURL(arquivo);
+      tipo = arquivo.type;
+    }
+    const post = {
+      id: Date.now(),
+      autor: usuario,
+      fotoAutor: null,
+      texto: texto,
+      midia: midia,
+      tipoMidia: tipo,
+      tag: tag,
+      curtidas: [],
+      comentarios: [],
+      reports: []
+    };
+    posts.unshift(post);
+    salvar();
+    document.getElementById('textPost').value = '';
+    document.getElementById('mediaPost').value = '';
+    document.getElementById('tagPost').value = '';
+    if (tipo && tipo.startsWith('video/')) mostrarAba('videos');
+    else mostrarAba('posts');
+    renderPosts();
+    renderVideos();
+    playSound('soundPost');
+  }
+
+  // Tocar som respeitando flags (não há configuração, só ativa)
+  function playSound(id) {
+    const s = document.getElementById(id);
+    if (s) {
+      s.currentTime = 0;
+      s.play();
+    }
+  }
+
+  // Botão + com menu toggle
+  const btnAddPost = document.getElementById('btnAddPost');
+  const addMenu = document.getElementById('addMenu');
+  btnAddPost.addEventListener('click', () => toggleAddMenu());
+
+  function toggleAddMenu(force) {
+    if (typeof force === 'boolean') {
+      addMenu.style.display = force ? 'flex' : 'none';
+    } else {
+      addMenu.style.display = addMenu.style.display === 'flex' ? 'none' : 'flex';
+    }
+  }
+
+  // Auto login
+  window.onload = () => {
+    const localUser = localStorage.getItem('usuarioAtivo');
+    if (localUser && usuarios[localUser]) {
+      usuario = localUser;
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+      carregar();
+      mostrarAba('posts');
+    }
   };
+
+  // Fechar modal ao clicar fora
+  postModal.addEventListener('click', e => {
+    if (e.target === e.currentTarget) fecharModalPost();
+  });
+
+  // Mostrar modal apoio Pix
+  function mostrarSupport() {
+    document.getElementById('supportModal').style.display = 'flex';
+  }
+
+  // Fechar modal apoio Pix
+  function fecharSupport() {
+    document.getElementById('supportModal').style.display = 'none';
+  }
 </script>
+
 </body>
 </html>
